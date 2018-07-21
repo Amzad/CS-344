@@ -96,7 +96,6 @@ public class subwayTrain implements Runnable {
 	
 	public static synchronized void increaseCount() {
 		pCount.incrementAndGet();
-		System.out.println(pCount);
 	}
 	
 	public void getCount() {
