@@ -1,35 +1,51 @@
-import java.util.Vector;
 
 public class Main {
 	
-	public static Vector<Shuttle> shuttles = new Vector<Shuttle>();
-
 	public static void main(String[] args) {
-		int numShuttles = Integer.parseInt(args[0]);
+		int numCommuter;
+		if (args.length > 0)
+		{
+			numCommuter = Integer.parseInt(args[0]); // Number of commuters
+			
+		}
+		else {
+			numCommuter = 15; // Number of commuters
+		}
+		int trainCapacity = 10; // Max passenger capacity for trains.
+		int numAttendant = 2; // Number of Attendants
 		
-		
-		
-		Station station = new Station(numShuttles);
-		
-		station.start();
-		
-		Supervisor supervisor = new Supervisor();
-		supervisor.start();
-		
-		Controller controller = new Controller(numShuttles, station);
-		controller.start();
-
-		
-		for (int i = 0; i < numShuttles; i++) {
-			shuttles.add(new Shuttle((i + 1), controller, station, supervisor));
-			shuttles.get(i).start();
+		// Start attendant objects
+		for (int i = 1; i <= numAttendant; i++) {
+			garageAttendant c = new garageAttendant(i, numCommuter);
+			Thread t = new Thread(c);
+			t.start();
 		}
 		
+		// Start commuter objects
+		for (int i = 1; i <= numCommuter; i++) {
+			Commuter c = new Commuter(i);
+			Thread t = new Thread(c);
+			t.start();
+		}
 		
+				// Start train objects.
+		subwayTrain m = new subwayTrain("A", trainCapacity, numCommuter);
+		Thread o = new Thread(m);
+		o.start();
 		
+		sleep(10); // Artificial delay between trains. Not needed but makes it more realistic
+		subwayTrain n = new subwayTrain("B", trainCapacity, numCommuter);
+		Thread p = new Thread(n);
+		p.start();
 		
-
-		
+	}
+	
+	private static void sleep(int x) {
+		try {
+			Thread.sleep(x * 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

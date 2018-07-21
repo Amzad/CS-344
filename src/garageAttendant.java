@@ -1,4 +1,3 @@
-package P1;
 
 public class garageAttendant implements Runnable {
 
@@ -14,17 +13,17 @@ public class garageAttendant implements Runnable {
 	public garageAttendant(int i, int count) {
 		name = i;
 		counter = count;
+		msg("Attendant " + name + " ready.");
 	}
 
 	public void run() {
-		msg("Attendant ready");
 		while (true) {
 			if (count == counter) break;
 			waitForCommuter();
 		}
 	}
 
-	public void waitForCommuter() {
+	private void waitForCommuter() {
 		while (count < counter) {
 			synchronized (isAvailable) {
 				isAvailable.notify();
