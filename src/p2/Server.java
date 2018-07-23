@@ -17,7 +17,7 @@ public class Server implements Runnable {
 	public static boolean connectionOpen = true;
 
 	public Server() {
-		//print("Server started");
+		print("Server started");
 	}
 
 	public void run() {
@@ -33,7 +33,7 @@ public class Server implements Runnable {
 			Socket socket = null;
 			try {
 				
-				//print("Waiting for incoming connections.");
+				print("Waiting for incoming connections.");
 
 				socket = serverSocket.accept();
 
