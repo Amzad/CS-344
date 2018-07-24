@@ -1,4 +1,4 @@
-package p2;
+package server;
 
 public class garageAttendant implements Runnable {
 

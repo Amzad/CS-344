@@ -1,4 +1,4 @@
-package p2;
+package client;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -6,17 +6,23 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class CommuterClient implements Runnable {
-	public static final int portNumber = 3000;
-	public static final String serverIP = "127.0.0.1";
+	public static int portNumber = 0;
+	public static String serverIP = "";
 	public BufferedReader bReader;
 	public int commuterNumber;
 
-	public CommuterClient(int commuterCount) {
+	public CommuterClient(int commuterCount, String serverIP, int portNumber) {
 		this.commuterNumber = commuterCount;
+		this.serverIP = serverIP;
+		this.portNumber = portNumber;
 
 	}
 
 	public void run() {
+		if ((serverIP.length() == 0) && (portNumber == 0)) {
+			print("Invalid server ip and port.");
+			return;
+		}
 		try {
 			Socket socket = new Socket(serverIP, portNumber);
 			PrintWriter out = new PrintWriter(socket.getOutputStream());

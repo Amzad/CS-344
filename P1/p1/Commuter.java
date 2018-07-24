@@ -1,4 +1,4 @@
-package p2;
+package p1;
 
 import java.util.Random;
 import java.util.Vector;
@@ -27,27 +27,25 @@ public class Commuter implements Runnable {
 	}
 
 	public void run() {
-		
-		//commuteToNYC(); // Commute to NYC with random sleep time.
-		/*joinLane(); // Join appropriate lane based on ezpass or cash.
+		commuteToNYC(); // Commute to NYC with random sleep time.
+		joinLane(); // Join appropriate lane based on ezpass or cash.
 		payToll(); // Use vector to keep place in appropriate lane and pay.
 		parkAtGarage(); // Park at the garage.
 		waitForTrain();
-		*/
 	}
 
-	public void commuteToNYC() {
+	private void commuteToNYC() {
 		msg("Commuter " + name + " is commuting to New York City.");
-		sleep(random(1, 4)); // Sleep for a random time. time is between 5 and 10 seconds.
+		sleep(random(5, 10)); // Sleep for a random time. time is between 5 and 10 seconds.
 	}
 
-	public void joinLane() {
+	private void joinLane() {
 		// If the default payment method is ezpass
 		if (paymentMethod == 0) {
 			synchronized (ezpassLane) {
 				ezpassLane.addElement(this);
 			}
-			msg("Commuter " + name + " has joined the ezpass lane.");
+			msg(name + " has joined the ezpass lane.");
 			sleep(2);
 			// If your not the first person on line, you wait again.
 			while (true) {
@@ -70,7 +68,7 @@ public class Commuter implements Runnable {
 			synchronized (cashLane) {
 				cashLane.addElement(this);
 			}
-			msg("Commuter " + name + " has joined the cash lane.");
+			msg(name + " has joined the cash lane.");
 			sleep(2);
 			while (true) {
 				if (!cashLane.elementAt(0).equals(this)) {
@@ -89,12 +87,12 @@ public class Commuter implements Runnable {
 		}
 	}
 
-	public void payToll() {
+	private void payToll() {
 		// If payment is ezpass
 		if (paymentMethod == 0) {
 			try {
 				synchronized (ezpassLane) {
-					if (ezpassLane.elementAt(0).getName() == name) {
+					if (ezpassLane.elementAt(0).equals(this)) {
 						ezpassLane.removeElementAt(0);
 						if (ezpassLane.size() != 0)
 							ezpassLane.notifyAll();
@@ -104,7 +102,7 @@ public class Commuter implements Runnable {
 				}
 				msg("Commuter " + name + " paid ezpass toll.");
 				// Continue commuting to NYC
-				sleep(random(2,6));
+				sleep(6);
 
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -116,7 +114,8 @@ public class Commuter implements Runnable {
 		if (paymentMethod == 1) {
 			try {
 				synchronized (cashLane) {
-					if (cashLane.elementAt(0).getName() == name) { // If the commuter is firsts in line, pay toll and move on.
+					if (cashLane.elementAt(0).equals(this)) { // If the commuter is firsts in line, pay toll and move
+																// on.
 						cashLane.removeElementAt(0);
 						if (cashLane.size() != 0)
 							cashLane.notifyAll();
@@ -127,7 +126,7 @@ public class Commuter implements Runnable {
 				}
 				msg("Commuter " + name + " paid cash toll.");
 				// Continue commuting to NYC
-				sleep(random(2,6));
+				sleep(6);
 
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -137,7 +136,7 @@ public class Commuter implements Runnable {
 		}
 	}
 
-	public void parkAtGarage() {
+	private void parkAtGarage() {
 		synchronized (garageAttendant.isAvailable) {
 			msg("Commuter " + name + " has arrived at the parking garage.");
 			msg("Commuter " + name + " is waiting for an attendant.");
@@ -145,6 +144,7 @@ public class Commuter implements Runnable {
 				try {
 					garageAttendant.isAvailable.wait();
 					msg("Attendant has parked Commuter's " + name + " car.");
+					garageAttendant.increaseCounter();
 					break;
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -155,7 +155,7 @@ public class Commuter implements Runnable {
 
 	}
 
-	public void waitForTrain() {
+	private void waitForTrain() {
 		msg("Commuter " + name + " waiting for Train " + trainName);
 		// Train A
 		if (trainName.equals("A")) {
