@@ -3,6 +3,7 @@ package p1;
 public class garageAttendant implements Runnable {
 
 	static final Object isAvailable = new Object();
+	static final Object isWaiting = new Object();
 	static int counter;
 	
 
@@ -37,7 +38,7 @@ public class garageAttendant implements Runnable {
 	public void msg(String m) {
 		System.out.println("[" + (System.currentTimeMillis() - time) + "] " + getName() + ": " + m);
 	}
-
+ 
 	public int getName() {
 		return name;
 	}

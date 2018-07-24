@@ -17,13 +17,6 @@ public class ClientHelper extends Thread {
 	public String input;
 	public int name = -1;
 
-	public ClientHelper(Socket socket, InputStreamReader inputStreamReader, PrintWriter outputStreamWriter) {
-		this.socket = socket;
-		// this.inputStreamReader = inputStreamReader;
-		// this.outputStreamWriter = outputStreamWriter;
-
-	}
-
 	public ClientHelper(Socket socket) {
 		this.socket = socket;
 	}
@@ -66,26 +59,36 @@ public class ClientHelper extends Thread {
 
 					case 0:
 						c.commuteToNYC();
+						outputStreamWriter.println("Server: commuteToNYC method completed for Commuter " + c.name);
+						outputStreamWriter.flush();
 						break;
 
 					case 1:
 						c.joinLane();
+						outputStreamWriter.println("Server: joinLane method completed for Commuter " + c.name);
+						outputStreamWriter.flush();
 						break;
 
 					case 2:
 						c.payToll();
+						outputStreamWriter.println("Server: payToll method completed for Commuter " + c.name);
+						outputStreamWriter.flush();
 						break;
 
 					case 3:
 						c.parkAtGarage();
+						outputStreamWriter.println("Server: parkAtGarage method completed for Commuter " + c.name);
+						outputStreamWriter.flush();
 						break;
 
 					case 4:
 						c.waitForTrain();
+						outputStreamWriter.println("Server: waitForTrain method completed for Commuter " + c.name);
+						outputStreamWriter.flush();
 						break;
 					}
-					outputStreamWriter.println("Done");
-					outputStreamWriter.flush();
+					//outputStreamWriter.println("Done");
+					//outputStreamWriter.flush();
 
 				} else if (thread.equals("Attendant")) {
 					new Thread(new garageAttendant(attendantCount.incrementAndGet())).start();
@@ -100,26 +103,36 @@ public class ClientHelper extends Thread {
 						switch (methodNumber) {
 						case 0:
 							t.resetTrain();
+							outputStreamWriter.println("Server: resetTrain method completed for Train " + t.name);
+							outputStreamWriter.flush();
 							break;
 
 						case 1:
 							t.inTransit();
+							outputStreamWriter.println("Server: inTransit method completed for Train " + t.name);
+							outputStreamWriter.flush();
 							break;
 
 						case 2:
 							t.atStop();
+							outputStreamWriter.println("Server: atStop method completed for Train " + t.name);
+							outputStreamWriter.flush();
 							break;
 
 						case 3:
 							t.inTransit();
+							outputStreamWriter.println("Server: inTransit method completed for Train " + t.name);
+							outputStreamWriter.flush();
 							break;
 
 						case 4:
 							t.lastStop();
+							outputStreamWriter.println("Server: lastStop method completed for Train " + t.name);
+							outputStreamWriter.flush();
 							break;
 						}
-						outputStreamWriter.println("Done");
-						outputStreamWriter.flush();
+						//outputStreamWriter.println("Done");
+						//outputStreamWriter.flush();
 						
 						
 						
@@ -129,35 +142,44 @@ public class ClientHelper extends Thread {
 						switch (methodNumber) {
 						case 0:
 							t.resetTrain();
+							outputStreamWriter.println("Server: resetTrain method completed for Train " + t.name);
+							outputStreamWriter.flush();
 							break;
 
 						case 1:
 							t.inTransit();
+							outputStreamWriter.println("Server: inTransit method completed for Train " + t.name);
+							outputStreamWriter.flush();
 							break;
 
 						case 2:
 							t.atStop();
+							outputStreamWriter.println("Server: atStop method completed for Train " + t.name);
+							outputStreamWriter.flush();
 							break;
 
 						case 3:
 							t.inTransit();
+							outputStreamWriter.println("Server: inTransit method completed for Train " + t.name);
+							outputStreamWriter.flush();
 							break;
 
 						case 4:
 							t.lastStop();
+							outputStreamWriter.println("Server: lastStop method completed for Train " + t.name);
+							outputStreamWriter.flush();
 							break;
 						}
-						outputStreamWriter.println("Done");
-						outputStreamWriter.flush();
 
 					} else if (name == -1) {
 						print("Server: Maximum number of Trains allowed. Dropping new connection.");
 						outputStreamWriter.write("Maximum number of Trains allowed. Dropping new connection.");
 						outputStreamWriter.close();
+						socket.close();
 						break;
+						
 					}
 				}
-
 			}
 
 		} catch (IOException e1) {
