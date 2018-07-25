@@ -1,6 +1,7 @@
 package client;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -9,9 +10,9 @@ public class AttendantClient implements Runnable {
 	public static int portNumber = 0;
 	public static String serverIP = "";
 	public int attendantNumber;
+	Socket socket;
 
 	public AttendantClient(int attendantCount, String serverIP, int portNumber) {
-		print("Attendant Running");
 		this.attendantNumber = attendantCount;
 		this.serverIP = serverIP;
 		this.portNumber = portNumber;
@@ -20,31 +21,42 @@ public class AttendantClient implements Runnable {
 
 	public void run() {
 		if ((serverIP.length() == 0) && (portNumber == 0)) {
-			print("Invalid server ip and port.");
+			print("Client: " + "Invalid server ip and port.");
 			return;
 		}
 		try {
-			Socket socket = new Socket(serverIP, portNumber);
+			socket = new Socket(serverIP, portNumber);
 			PrintWriter out = new PrintWriter(socket.getOutputStream());
 			BufferedReader bReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			
+
 			String reply;
-			
+
 			while (true) {
-				out.println("A");
-				out.flush();
-				
-				while ((reply = bReader.readLine()) == null) {
+				for (int i = 0; i <= 1; i++) {
+					out.println("A" + i);
+					print("Client: " + "Attendant " + attendantNumber + " has sent a request for method " + i);
+					out.flush();
+
+					while ((reply = bReader.readLine()) == null) {
+					}
+					print(reply);
+
 				}
-				if (reply.equals("Confirmed")) break;
-				
+
 			}
-			out.close();
-			socket.close();
+			//out.close();
+			//socket.close();
 
 		} catch (Exception e) {
 			print(e.toString());
+			try {
+				socket.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
+		
 
 	}
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientHelper extends Thread {
@@ -42,10 +43,17 @@ public class ClientHelper extends Thread {
 					thread = "Commuter";
 					methodNumber = Character.getNumericValue(input.charAt(1));
 				}
+				
 				if (input.charAt(0) == 'A') {
+					if (name == -1) {
+						name = attendantCount.incrementAndGet();	
+					}
 					thread = "Attendant";
+					methodNumber = Character.getNumericValue(input.charAt(1));
 				}
+				
 				if (input.charAt(0) == 'T') {
+					
 					 if ((name == -1) && (trainCount.get() < 2)) {
 						 name = trainCount.incrementAndGet();
 					 }
@@ -91,9 +99,23 @@ public class ClientHelper extends Thread {
 					//outputStreamWriter.flush();
 
 				} else if (thread.equals("Attendant")) {
-					new Thread(new garageAttendant(attendantCount.incrementAndGet())).start();
-					outputStreamWriter.println("Confirmed");
-					outputStreamWriter.flush();
+					garageAttendant a =  new garageAttendant(name);
+					//new Thread(new garageAttendant(attendantCount.incrementAndGet())).start();
+					
+					switch (methodNumber) {
+
+					case 0:
+						a.signalCommuter();
+						outputStreamWriter.println("Server: signalCommuter method completed for Attendant " + a.name);
+						outputStreamWriter.flush();
+						break;
+
+					case 1:
+						a.waitForCommuter();
+						outputStreamWriter.println("Server: waitForCommuter method completed for Attendant " + a.name);
+						outputStreamWriter.flush();
+						break;
+					}
 
 				} else if (thread.equals("Train")) {
 					
@@ -182,10 +204,19 @@ public class ClientHelper extends Thread {
 				}
 			}
 
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+			print("Connection abbruptedly closed");
+			if (thread.equals("Train")) {
+				trainCount.decrementAndGet();
+				try {
+					socket.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		} 
 	}
 
 	public void print(String input) {

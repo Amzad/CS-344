@@ -39,13 +39,16 @@ public class Commuter implements Runnable {
 		sleep(random(5, 10)); // Sleep for a random time. time is between 5 and 10 seconds.
 	}
 
+	/**
+	 * 
+	 */
 	private void joinLane() {
 		// If the default payment method is ezpass
 		if (paymentMethod == 0) {
 			synchronized (ezpassLane) {
 				ezpassLane.addElement(this);
 			}
-			msg(name + " has joined the ezpass lane.");
+			msg("Commuter " + name + " has joined the ezpass lane.");
 			sleep(2);
 			// If your not the first person on line, you wait again.
 			while (true) {
@@ -68,7 +71,7 @@ public class Commuter implements Runnable {
 			synchronized (cashLane) {
 				cashLane.addElement(this);
 			}
-			msg(name + " has joined the cash lane.");
+			msg("Commuter " + name + " has joined the cash lane.");
 			sleep(2);
 			while (true) {
 				if (!cashLane.elementAt(0).equals(this)) {
@@ -137,20 +140,25 @@ public class Commuter implements Runnable {
 	}
 
 	private void parkAtGarage() {
-		synchronized (garageAttendant.isAvailable) {
+		synchronized (garageAttendant.isWaiting) {
 			msg("Commuter " + name + " has arrived at the parking garage.");
-			msg("Commuter " + name + " is waiting for an attendant.");
+			msg("Commuter " + name + " notified an attendant.");
+
+			garageAttendant.isWaiting.notify();
+		}
+		synchronized (garageAttendant.isAvailable) {
 			while (true) {
 				try {
+					msg("Commuter " + name + " is waiting for an attendant.");
 					garageAttendant.isAvailable.wait();
 					msg("Attendant has parked Commuter's " + name + " car.");
-					garageAttendant.increaseCounter();
+					//garageAttendant.increaseCounter();
 					break;
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-			// }
+
 		}
 
 	}
@@ -183,7 +191,8 @@ public class Commuter implements Runnable {
 					synchronized (subwayTrain.trainAPassengers) {
 						msg("Commuter " + name + " is waiting inside Train A");
 						subwayTrain.trainAPassengers.wait();
-						msg("Commuter " + name + " has arrived at the last stop and is walking on his/her way to work.");
+						msg("Commuter " + name
+								+ " has arrived at the last stop and is walking on his/her way to work.");
 						subwayTrain.increaseCount();
 					}
 				} catch (InterruptedException e) {
@@ -217,7 +226,8 @@ public class Commuter implements Runnable {
 					synchronized (subwayTrain.trainBPassengers) {
 						msg("Commuter " + name + " is waiting inside Train B");
 						subwayTrain.trainBPassengers.wait();
-						msg("Commuter " + name + " has arrived at the last stop and is walking on his/her way to work.");
+						msg("Commuter " + name
+								+ " has arrived at the last stop and is walking on his/her way to work.");
 						subwayTrain.increaseCount();
 					}
 				} catch (InterruptedException e) {

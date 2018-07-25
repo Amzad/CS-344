@@ -5,7 +5,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		int numCommuter;
-		if (args.length > 0)
+		if (args.length != 0)
 		{
 			numCommuter = Integer.parseInt(args[0]); // Number of commuters
 			

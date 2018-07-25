@@ -21,7 +21,22 @@ public class garageAttendant implements Runnable {
 	public void run() {
 		while (true) {
 			if (count == counter) break;
+			signalCommuter();
 			waitForCommuter();
+		}
+	}
+	
+	public void signalCommuter() {
+		while (count < counter) {
+			synchronized(isWaiting) {
+				try {
+					isWaiting.wait();
+					break;
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -30,7 +45,6 @@ public class garageAttendant implements Runnable {
 			synchronized (isAvailable) {
 				isAvailable.notify();
 				break;
-				
 			}		
 		}
 	}

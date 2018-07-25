@@ -27,27 +27,18 @@ public class Server {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		print("Waiting for incoming connections.");
 		while(connectionOpen) {
-			
 			Socket socket = null;
 			try {
-				
-				print("Waiting for incoming connections.");
-
 				socket = serverSocket.accept();
-
-				//print("Response received from " + socket.getRemoteSocketAddress());	
-				
 				new Thread(new ClientHelper(socket)).start();
 				
 			}
 			catch (IOException e) {
 				print("Unable to open socket.");
 			}
-		}
-		//serverSocket.close();
-		
-		
+		}	
 	}
 
 	public static void print(String input) {

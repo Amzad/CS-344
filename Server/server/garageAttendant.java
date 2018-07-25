@@ -3,7 +3,7 @@ package server;
 public class garageAttendant implements Runnable {
 
 	static final Object isAvailable = new Object();
-	static int counter;
+	static final Object isWaiting = new Object();
 
 	public static long time = System.currentTimeMillis();
 	int name;
@@ -15,10 +15,29 @@ public class garageAttendant implements Runnable {
 	}
 
 	public void run() {
+		msg("Attendant " + name + " is running");
+		
+	}
+
+	public void signalCommuter() {
 		while (true) {
-			synchronized (isAvailable) {
-				isAvailable.notify();
+			synchronized (isWaiting) {
+			try {
+				isWaiting.wait();
+				break;
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+		}
+		}
+		
+
+	}
+
+	public void waitForCommuter() {
+		synchronized (isAvailable) {
+			isAvailable.notify();
 		}
 	}
 

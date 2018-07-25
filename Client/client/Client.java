@@ -25,14 +25,14 @@ public class Client {
 		//serverIP = "hawk.cs.qc.edu";
 
 		// Start Client Thread
-		System.out.println("Runnning on server " + serverIP + ":" + portNumber);
+		System.out.println("Runnning on client " + serverIP + ":" + portNumber);
 		for (int i = 1; i <= attendantCount; i++) {
 			Thread b = new Thread(new AttendantClient(i, serverIP, portNumber));
 			b.start();
 		}
 		
 		for (int i = 1; i <= trainCount; i++) {
-			Thread c = new Thread(new TrainClient(trainCount, serverIP, portNumber));
+			Thread c = new Thread(new TrainClient(i, serverIP, portNumber));
 			c.start();
 		}
 		
